@@ -1,0 +1,63 @@
+<!--
+QUESTION 4:
+
+With javascript/jquery build a table listing out all the data from the customers array (stored in data.js).
+The listing should show the customer's name and age.
+Above the listing add a textbox.
+Entering a value will search all names which contains the entered string.
+When you search for a number range (10-20) it will filter the results based off the customer's age.
+-->
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<title>Test4</title>
+	<script type="text/javascript" src="jquery.js" ></script>
+	<script type="text/javascript" src="data.js" ></script>
+</head>
+<body>
+	<h1>Search Customers</h1>
+	<input id="in" type="text" />
+	<input id="go" type="submit" value="Search"/>
+	<p class="data-container"> </p>
+</body>
+
+<script type="text/javascript">
+	$( "#go" ).click(function() {
+		if (/^\d*-\d*$/.test($("#in").val()) == true) {
+			var data = findDates($('#in').val() )
+		}else{
+			var data = findName($('#in').val() )
+		}
+		if(data.length > 0){
+			$( ".data-container" ).html('<h2>'+data.length+' result(s) have been found.</h2>');
+		}else{
+			$( ".data-container" ).html('<h2>Nothing found.</h2>');
+		}
+		data.forEach(function(ele) {
+			$( ".data-container" ).append( '<small>'+ele.birthdate+'</small> : <strong>'+ele.name+'</strong><br />' );
+		});
+	});
+
+	var findDates = function(input) {
+		var dates = input.split("-");
+		var thisYear = new Date().getFullYear();
+		var end = thisYear - dates[0];
+		var start = thisYear - dates[1];
+		console.log('searching',start,end);
+		var arr = new Array();
+		for (var i = 0, len = customers.length; i < len; i++) {
+			var birth = customers[i].birthdate.split("-");
+			if (birth[0] >= start && birth[0] <= end) arr.push(customers[i]);
+		}
+		return arr;
+	}
+	var findName = function(input) {
+		var arr = new Array();
+		console.log('searching "'+input+'"');
+		for (var i = 0, len = customers.length; i < len; i++) {
+			if (customers[i].name.search(input) > -1)  arr.push(customers[i]);
+		}
+		return arr;
+	}
+</script>
+</html>
